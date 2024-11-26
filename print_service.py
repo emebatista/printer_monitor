@@ -146,7 +146,7 @@ class PDFPrintHandler:
 def main():
     config = load_config()
     monitor_folder = config["monitor_folder"]
-    print("serviço de impressão - versão 1.0")
+    print("serviço de impressão - versão 1.1")
 
     handler = PDFPrintHandler(config)
 
