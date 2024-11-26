@@ -69,13 +69,9 @@ class PDFPrintHandler:
                     
         semaphore_file = os.path.join(folder_path, f"printer{semaphore_extension}")
 
-        smf_files = [f for f in os.listdir(folder_path) if f.endswith(semaphore_extension)]
-        
+        del_files = [f for f in os.listdir(folder_path) if f == 'deletar.del']
 
-        start_path = os.path.join(folder_path, f"printer{semaphore_extension}")
-        finish_path = os.path.join(folder_path, f"printerfim{semaphore_extension}")
-      
-        if remove_printed_folder and len(smf_files) == 2 and os.path.join(folder_path,smf_files[0]) == start_path and os.path.join(folder_path,smf_files[1]) == finish_path:
+        if remove_printed_folder and len(del_files) == 1:
             
             logging.info(f"Pasta {folder_path} apta a ser removida após impressão.")
 
