@@ -1,0 +1,15 @@
+{
+  "sumatra_path": "c:\\print_monitor\\SumatraPDF\\SumatraPDF.exe",
+  "monitor_folder": "c:\\relatorios",
+  "log_folder": "c:\\print_monitor\\logs",
+  "print_command": "-print-to",
+  "remove_printed_file": false,
+  "remove_printed_folder": false,
+  "print_timeout": 60,
+  "polling_interval_seconds": 5,
+  "log_level": "INFO",
+  "service_name": "PrintMonitorService",
+  "pdf_extension": ".pdf",
+  "semaphore_extension": ".smf"
+}
+  
