@@ -4,6 +4,7 @@ import time
 import subprocess
 import shutil
 import logging
+from logging.handlers import RotatingFileHandler
 
 def load_config():
     with open("config.json", "r") as f:
@@ -13,16 +14,25 @@ def setup_logging(config):
     log_folder = config["log_folder"]
     if not os.path.exists(log_folder):
         os.makedirs(log_folder)
-    
+
     log_file = os.path.join(log_folder, "print_service.log")
-    logging.basicConfig(filename=log_file, level=logging.INFO, 
-                                format='%(asctime)s - %(levelname)s - %(message)s')
+    max_log_size = 5 * 1024 * 1024  # 5 MB
+    backup_count = 5  # Keep last 5 log files
+
+    handler = RotatingFileHandler(log_file, maxBytes=max_log_size, backupCount=backup_count)
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    logger.addHandler(handler)
 
 config = load_config()
 setup_logging(config)
 semaphore_extension = config["semaphore_extension"]
 remove_printed_file = config["remove_printed_file"]
 remove_printed_folder = config["remove_printed_folder"]
+documents_to_print    = config["documents_to_print"]
         
 class PDFPrintHandler:
     def __init__(self, config):
@@ -41,11 +51,13 @@ class PDFPrintHandler:
     def process_folder(self, folder_path, printer_name):
 
         files_to_print = sorted(os.listdir(folder_path))
-
+        
+        printed_documents = 0 
+        
         for filename in files_to_print:
             pdf_path = os.path.join(folder_path, filename)
 
-            if filename.endswith(".pdf"):
+            if filename.endswith(".pdf") and printed_documents <= documents_to_print:
                 semaphore_file = os.path.join(folder_path, f"{os.path.splitext(filename)[0]}{semaphore_extension}")
                 if os.path.exists(semaphore_file):
                     if self.print_pdf(pdf_path, printer_name):
@@ -63,6 +75,7 @@ class PDFPrintHandler:
                                 logging.info(f"Arquivo {pdf_path} removido.")
                                 os.remove(pdf_path)
                             logging.info(f"Arquivo {pdf_path} removido.")
+                            printed_documents += 1
                         except OSError as e:
                             logging.error(f"Erro ao remover o arquivo  {semaphore_file}: {e}")
 
@@ -146,7 +159,7 @@ class PDFPrintHandler:
 def main():
     config = load_config()
     monitor_folder = config["monitor_folder"]
-    print("serviço de impressão - versão 1.1")
+    print("serviço de impressão - versão 1.2")
 
     handler = PDFPrintHandler(config)
 

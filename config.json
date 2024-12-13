@@ -10,6 +10,7 @@
   "log_level": "INFO",
   "service_name": "PrintMonitorService",
   "pdf_extension": ".pdf",
-  "semaphore_extension": ".smf"
+  "semaphore_extension": ".smf",
+  "documents_to_print": 10
 }
   
